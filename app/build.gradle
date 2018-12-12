@@ -45,6 +45,20 @@ android {
     }
 }
 
+task runAppEngineAndStartTest {
+    dependsOn(':backend:appengineStart')
+    doLast {
+        println "started the server!"
+    }
+    finalizedBy(':app:connectedCheck')
+}
+
+task runAllChecks {
+    group 'verification'
+    dependsOn(':app:runAppEngineAndStartTest')
+    finalizedBy(':backend:appengineStop')
+}
+
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     endpointsServer project(path: ':backend', configuration: 'endpoints')

@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -34,6 +35,7 @@ public class MainActivityFragment extends Fragment {
 
     private EndpointGetJokeAsyncTask mAsyncTask;
     private InterstitialAd mInterstitialAd;
+    private AdView mAdView;
     private ProgressBar mJokeLoadingProgressBar;
 
 
@@ -70,7 +72,7 @@ public class MainActivityFragment extends Fragment {
             });
         }
 
-        AdView mAdView = (AdView) root.findViewById(R.id.adView);
+        mAdView = (AdView) root.findViewById(R.id.adView);
         // Create an ad request. Check logcat output for the hashed device ID to
         // get test ads on a physical device. e.g.
         // "Use AdRequest.Builder.addTestDevice("ABCDEF012345") to get test ads on this device."
@@ -109,6 +111,10 @@ public class MainActivityFragment extends Fragment {
         mAsyncTask.execute(getContext());
     }
 
+    public AdView getAdView() {
+        return mAdView;
+    }
+
     public class EndpointGetJokeAsyncTask extends AsyncTask<Context, Void, String> {
         private MyApi myApiService = null;
         private Context context;
@@ -138,7 +144,8 @@ public class MainActivityFragment extends Fragment {
             try {
                 return myApiService.getJoke().execute().getData();
             } catch (IOException e) {
-                return e.getMessage();
+                Log.e(TAG, "EndpointGetJokeAsyncTask: " + e.getMessage());
+                return "";
             }
         }
 
